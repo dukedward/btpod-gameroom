@@ -1,21 +1,46 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, User, Gamepad2, Monitor, Settings, Mic2 } from "lucide-react";
+import {
+  Home,
+  User,
+  Gamepad2,
+  Monitor,
+  Settings,
+  Mic2,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function Layout() {
   const location = useLocation();
-  const { user } = useAuth();
-  const isHost = user?.role === "host";
+  const {
+    user,
+    profile,
+    isAuthenticated,
+    isAdmin,
+    isHost,
+    loginWithGoogle,
+    logout,
+  } = useAuth();
+
+  const displayName =
+    profile?.full_name ||
+    profile?.username ||
+    user?.displayName ||
+    user?.email ||
+    "Account";
 
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
     { path: "/game-room", icon: Gamepad2, label: "Game Room" },
     { path: "/scoreboard", icon: Monitor, label: "Scoreboard" },
-    { path: "/profile", icon: User, label: "Profile" },
+    // { path: "/profile", icon: User, label: "Profile" },
   ];
 
-  if (isHost) {
+  if (isHost || isAdmin) {
     navItems.splice(2, 0, {
       path: "/host",
       icon: Settings,
@@ -64,32 +89,58 @@ export default function Layout() {
             })}
           </nav>
 
-          {user && (
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-foreground">
-                  {user.display_name || user.full_name}
-                </p>
-                <p className="text-xs text-primary capitalize">
-                  {user.role || "viewer"}
-                </p>
-              </div>
-              <div className="w-9 h-9 rounded-full bg-primary/20 border-2 border-primary/40 overflow-hidden">
-                {user.avatar_url ? (
-                  <img
-                    src={user.avatar_url}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-primary font-bold text-sm">
-                    {(user.display_name ||
-                      user.full_name ||
-                      "?")[0].toUpperCase()}
+          {profile && (
+            <Link
+              key={"profile"}
+              to={"/profile"}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:block text-right">
+                  <p className="text-sm font-medium text-foreground">
+                    {profile.display_name || profile.full_name}
+                  </p>
+                  <p className="text-xs text-primary capitalize">
+                    {profile.role || "viewer"}
+                  </p>
+                </div>
+                <div className="w-9 h-9 rounded-full bg-primary/20 border-2 border-primary/40 overflow-hidden">
+                  {profile.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-primary font-bold text-sm">
+                      {(profile.display_name ||
+                        profile.full_name ||
+                        "?")[0].toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={logout}
+                      title="Sign Out"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </Button>
                   </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={loginWithGoogle}
+                    className="font-body bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+                  >
+                    <LogIn className="w-4 h-4" /> Sign In
+                  </Button>
                 )}
               </div>
-            </div>
+            </Link>
           )}
         </div>
       </header>

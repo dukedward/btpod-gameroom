@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -229,6 +230,21 @@ export default function GameRoom() {
       ) : (
         <QuestionDisplay game={game} />
       )}
+
+      {/* Wheel of Misfortune Link */}
+      <Link to="/wheel" className="block">
+        <div className="rounded-xl bg-linear-to-r from-destructive/20 to-primary/10 border border-destructive/30 p-4 flex items-center justify-between hover:border-destructive/60 transition-all">
+          <div>
+            <p className="font-display text-lg tracking-wider text-foreground">
+              🎡 Wheel of Misfortune
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Spin to reveal a penalty for the loser
+            </p>
+          </div>
+          <span className="text-2xl">→</span>
+        </div>
+      </Link>
 
       {/* Buzz-In Button */}
       <div className="flex justify-center py-4">

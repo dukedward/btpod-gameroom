@@ -55,7 +55,7 @@ export async function createGame(data) {
     revealed_info: data.revealed_info || "",
     buzzed_in_by: data.buzzed_in_by || "",
     buzzed_in_name: data.buzzed_in_name || "",
-    buzzed_locked: data.buzzed_locked || false,
+    buzz_locked: data.buzz_locked || false,
     culture_tags_category: data.culture_tags_category || "",
     culture_tags_phrase: data.culture_tags_phrase || "",
     culture_tags_acronym: data.culture_tags_acronym || "",

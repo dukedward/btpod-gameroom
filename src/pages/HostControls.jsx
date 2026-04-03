@@ -16,15 +16,12 @@ import { createGame, filterGames, updateGame } from "../api/game";
 import { filterScores } from "../api/score";
 
 export default function HostControls() {
-  const { user } = useAuth();
+  const { profile } = useAuth();
   const [game, setGame] = useState(null);
   const [scores, setScores] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
-    const me = await base44.auth.me();
-    setUser(me);
-
     const games = await filterGames({ status: "active" }, "-updated_date", 1);
     let pausedGames = [];
     if (!games.length) {
@@ -115,7 +112,7 @@ export default function HostControls() {
     );
   }
 
-  if (user?.role !== "host") {
+  if (profile?.role !== "host" && profile?.role !== "admin") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <Settings className="w-16 h-16 text-muted-foreground mb-4" />
@@ -219,11 +216,24 @@ export default function HostControls() {
       {/* Tabs */}
       <Tabs defaultValue={game ? "scores" : "games"} className="space-y-4">
         <TabsList className="bg-muted border border-border/50">
-          <TabsTrigger value="games">Games</TabsTrigger>
-          <TabsTrigger value="scores" disabled={!game}>
+          <TabsTrigger
+            value="games"
+            className="rounded-md px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            Games
+          </TabsTrigger>
+          <TabsTrigger
+            value="scores"
+            disabled={!game}
+            className="rounded-md px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             Scores
           </TabsTrigger>
-          <TabsTrigger value="questions" disabled={!game}>
+          <TabsTrigger
+            value="questions"
+            disabled={!game}
+            className="rounded-md px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             Questions
           </TabsTrigger>
         </TabsList>

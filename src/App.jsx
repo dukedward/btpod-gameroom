@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import GameRoom from "./pages/GameRoom";
 import PublicScoreboard from "./pages/PublicScoreboard";
 import HostControls from "./pages/HostControls";
+import WheelOfMisfortune from "./pages/WheelOfMisfortune";
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } =
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
         <Route path="/game-room" element={<GameRoom />} />
         <Route path="/scoreboard" element={<PublicScoreboard />} />
         <Route path="/host" element={<HostControls />} />
+        <Route path="/wheel" element={<WheelOfMisfortune />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>

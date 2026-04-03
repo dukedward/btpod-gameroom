@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Camera, Check, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { updateProfile } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, storage } from "@/lib/firebase";
 
 const AVATARS = [
   "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
@@ -21,45 +24,30 @@ const AVATARS = [
 export default function Profile() {
   const { user } = useAuth();
   const [displayName, setDisplayName] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("");
-  const [customUrl, setCustomUrl] = useState("");
+  const [file, setFile] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [saving, setSaving] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   base44.auth.me().then((me) => {
-  //     setUser(me);
-  //     setDisplayName(me.display_name || me.full_name || "");
-  //     setSelectedAvatar(me.avatar_url || "");
-  //     setLoading(false);
-  //   });
-  // }, []);
+  const handleSave = async () => {
+    let avatar_url = user.avatar_url;
+    setSaving(true);
+    // Upload avatar
+    if (file) {
+      const storageRef = ref(storage, `avatars/${user.user_id}`);
+      await uploadBytes(storageRef, file);
+      avatar_url = await getDownloadURL(storageRef);
+      setAvatarUrl(avatar_url);
+      toast.success("Image uploaded successfully.");
+    }
 
-  // const handleSave = async () => {
-  //   setSaving(true);
-  //   await base44.auth.updateMe({
-  //     display_name: displayName,
-  //     avatar_url: selectedAvatar || customUrl,
-  //   });
-  //   toast.success("Profile updated!");
-  //   setSaving(false);
-  // };
+    await updateProfile(auth.currentUser, {
+      username: username,
+      avatar_url,
+    });
 
-  // const handleUpload = async (e) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-  //   const { file_url } = await base44.integrations.Core.UploadFile({ file });
-  //   setSelectedAvatar(file_url);
-  //   setCustomUrl("");
-  // };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+    toast.success("Profile updated!");
+    setSaving(false);
+  };
 
   return (
     <div className="max-w-lg mx-auto pb-24 md:pb-8 space-y-8">
@@ -84,9 +72,9 @@ export default function Profile() {
       >
         <div className="relative group">
           <div className="w-28 h-28 rounded-full bg-muted border-4 border-primary/40 overflow-hidden">
-            {selectedAvatar ? (
+            {avatarUrl ? (
               <img
-                src={selectedAvatar}
+                src={avatarUrl}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -102,7 +90,7 @@ export default function Profile() {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={handleUpload}
+              onChange={(e) => setFile(e.target.files[0])}
             />
           </label>
         </div>
@@ -143,17 +131,16 @@ export default function Profile() {
             <button
               key={url}
               onClick={() => {
-                setSelectedAvatar(url);
-                setCustomUrl("");
+                setAvatarUrl(url);
               }}
               className={`relative rounded-xl overflow-hidden aspect-square border-2 transition-all ${
-                selectedAvatar === url
+                avatarUrl === url
                   ? "border-primary scale-105 ring-2 ring-primary/30"
                   : "border-border/50 hover:border-primary/40"
               }`}
             >
               <img src={url} alt="" className="w-full h-full object-cover" />
-              {selectedAvatar === url && (
+              {avatarUrl === url && (
                 <div className="absolute inset-0 bg-primary/30 flex items-center justify-center">
                   <Check className="w-5 h-5 text-white" />
                 </div>
