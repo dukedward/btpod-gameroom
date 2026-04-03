@@ -1,10 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
+import { listMisfortunes } from "../api/misfortune";
 
-const MISFORTUNES = [
+const DEFAULT_MISFORTUNES = [
   "Take a shot",
   "Spin again",
   "Sing an R&B song",
@@ -39,14 +40,21 @@ const COLORS = [
   "#10b981",
 ];
 
-const NUM = MISFORTUNES.length;
+const NUM = DEFAULT_MISFORTUNES.length;
 const SLICE_ANGLE = 360 / NUM;
 
 export default function WheelOfMisfortune() {
+  const [misfortunes, setMisfortunes] = useState(DEFAULT_MISFORTUNES);
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [result, setResult] = useState(null);
   const totalRotation = useRef(0);
+
+  useEffect(() => {
+    listMisfortunes("order", 50).then((items) => {
+      if (items.length > 0) setMisfortunes(items.map((m) => m.label));
+    });
+  }, []);
 
   const spin = () => {
     if (spinning) return;
@@ -67,7 +75,7 @@ export default function WheelOfMisfortune() {
 
     setTimeout(() => {
       setSpinning(false);
-      setResult(MISFORTUNES[landingSlice]);
+      setResult(misfortunes[landingSlice]);
     }, 4000);
   };
 
@@ -80,7 +88,7 @@ export default function WheelOfMisfortune() {
   const cy = size / 2;
   const r = size / 2 - 8;
 
-  const slices = MISFORTUNES.map((label, i) => {
+  const slices = misfortunes.map((label, i) => {
     const startAngle = i * SLICE_ANGLE - 90;
     const endAngle = startAngle + SLICE_ANGLE;
     const toRad = (deg) => (deg * Math.PI) / 180;

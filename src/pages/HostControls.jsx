@@ -10,6 +10,7 @@ import GameSelector from "../components/host/GameSelector";
 import ScoreManager from "../components/host/ScoreManager";
 import QuestionManager from "../components/host/QuestionManager";
 import BuzzInPanel from "../components/host/BuzzInPanel";
+import WheelManager from "../components/host/WheelManager";
 import CultureTagsManager from "../components/host/CultureTagsManager";
 import { CultureTagsHostView } from "../components/CultureTagsBoard";
 import { createGame, filterGames, updateGame } from "../api/game";
@@ -236,6 +237,12 @@ export default function HostControls() {
           >
             Questions
           </TabsTrigger>
+          <TabsTrigger
+            value="wheel"
+            className="rounded-md px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            🎡 Wheel
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="games">
@@ -275,6 +282,15 @@ export default function HostControls() {
               )}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="wheel">
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">
+              Edit the 10 misfortunes shown on the Wheel of Misfortune
+            </p>
+            <WheelManager />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
