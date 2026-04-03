@@ -87,6 +87,26 @@ export default function Layout() {
                 </Link>
               );
             })}
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={logout}
+                  title="Sign Out"
+                  className="font-body bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+                >
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                size="sm"
+                onClick={loginWithGoogle}
+                className="font-body bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
+              >
+                <LogIn className="w-4 h-4" /> Sign In
+              </Button>
+            )}
           </nav>
 
           {profile && (
@@ -119,26 +139,6 @@ export default function Layout() {
                     </div>
                   )}
                 </div>
-                {isAuthenticated ? (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={logout}
-                      title="Sign Out"
-                    >
-                      <LogOut className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ) : (
-                  <Button
-                    size="sm"
-                    onClick={loginWithGoogle}
-                    className="font-body bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
-                  >
-                    <LogIn className="w-4 h-4" /> Sign In
-                  </Button>
-                )}
               </div>
             </Link>
           )}
