@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Gamepad2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ScoreBoard from "../components/ScoreBoard";
+import ScoreBoard from "../components/Scoreboard";
 import QuestionDisplay from "../components/QuestionDisplay";
 import BuzzInButton from "../components/BuzzInButton";
 import { CultureTagsContestantView } from "../components/CultureTagsBoard";
