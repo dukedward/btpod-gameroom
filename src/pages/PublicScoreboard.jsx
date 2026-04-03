@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Monitor, RefreshCw, Mic2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ScoreBoard from "../components/ScoreBoard";
+import ScoreBoard from "@/components/Scoreboard";
 import QuestionDisplay from "../components/QuestionDisplay";
 import { filterGames } from "../api/game";
 import { filterScores } from "../api/score";
